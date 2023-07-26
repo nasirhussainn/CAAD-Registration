@@ -75,10 +75,18 @@ WSGI_APPLICATION = 'CAAD.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'CAAD',
+        'HOST': 'Haier-PC',  # Replace with your server address (e.g., 'localhost' or 'your_server_address\instance_name')
+        'PORT': '1433',  # The default port for MSSQL is 1433
+        'USER': 'nasir',  # Replace with your SQL Server login username
+        'PASSWORD': '2008n',  # Replace with your SQL Server login password
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',  # Replace with the appropriate ODBC driver version
+        },
+    },
 }
+
 
 
 # Password validation
