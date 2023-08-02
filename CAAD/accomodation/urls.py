@@ -17,6 +17,20 @@ urlpatterns = [
     path('ncpaccomodationappapi', views.NcpApprovalAccApi, name="NcpApprovalAccApi"),
     path('ncpaccomodationappapi/<int:ac_id>', views.NcpApprovalAccApi),
 
+    path('extensionproformaapi', views.ExtensionProformaApi, name="ExtensionProformaApi"),
+    path('extensionproformaapi/<int:ac_id>', views.ExtensionProformaApi),
+
+    path('caadextensionproformaapi', views.CaadExtensionVerificationApi, name="CaadExtensionVerificationApi"),
+    path('caadextensionproformaapi/<int:ac_id>', views.CaadExtensionVerificationApi),
+
+    path('loginproformaapi', views.LoginProformaApi, name="LoginProformaApi"),
+    path('loginproformaapi/<int:ac_id>', views.LoginProformaApi),
+
+     path('itloginapi', views.ItDeptLoginApi, name="ItDeptLoginApi"),
+    path('itloginapi/<int:ac_id>', views.ItDeptLoginApi),
+
+
+
 
 
 

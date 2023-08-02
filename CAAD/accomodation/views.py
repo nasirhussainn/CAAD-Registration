@@ -52,14 +52,14 @@ def AccomodationTypeApi(request,id=0):
         return JsonResponse("Failed to Insert",safe=False)
     elif request.method == 'PUT':
         accomodation_type_data=JSONParser().parse(request)
-        accomodation_type=AccomodationType.objects.get(ac_id=accomodation_type_data['ac_id'])
+        accomodation_type=AccomodationType.objects.get(accomodation_id=accomodation_type_data['accomodation_id'])
         accomodation_type_serializer = AccomodationTypeSerializer(accomodation_type,data=accomodation_type_data) 
         if accomodation_type_serializer.is_valid():
             accomodation_type_serializer.save()
             return Response({"message": "Updated successfully"})
         return JsonResponse("Failed to Update",safe=False)
     elif request.method == 'DELETE':
-        accomodation_type=AccomodationType.objects.get(ac_id=id)
+        accomodation_type=AccomodationType.objects.get(accomodation_id=id)
         accomodation_type.delete()
         return JsonResponse("Deleted sucessfully",safe=False)
 #End
@@ -81,14 +81,14 @@ def CaadAccomodationApi(request,id=0):
         return JsonResponse("Failed to Insert",safe=False)
     elif request.method == 'PUT':
         ncpChk_accomodation_data=JSONParser().parse(request)
-        ncpChk_accomodation=CaadAccomodationVerification.objects.get(ac_id=ncpChk_accomodation_data['ac_id'])
+        ncpChk_accomodation=CaadAccomodationVerification.objects.get(caad_hr3_id=ncpChk_accomodation_data['caad_hr3_id'])
         ncpChk_accomodation_serializer = CaadAccomodationVerificationSerializer(ncpChk_accomodation,data=ncpChk_accomodation_data) 
         if ncpChk_accomodation_serializer.is_valid():
             ncpChk_accomodation_serializer.save()
             return Response({"message": "Updated successfully"})
         return JsonResponse("Failed to Update",safe=False)
     elif request.method == 'DELETE':
-        ncpChk_accomodation=CaadAccomodationVerification.objects.get(ac_id=id)
+        ncpChk_accomodation=CaadAccomodationVerification.objects.get(caad_hr3_id=id)
         ncpChk_accomodation.delete()
         return JsonResponse("Deleted sucessfully",safe=False)
 #End
@@ -109,19 +109,19 @@ def NcpCheckAccApi(request,id=0):
         return JsonResponse("Failed to Insert",safe=False)
     elif request.method == 'PUT':
         caad_accomodation_data=JSONParser().parse(request)
-        caad_accomodation=NcpAccomodationCheck.objects.get(ac_id=caad_accomodation_data['ac_id'])
+        caad_accomodation=NcpAccomodationCheck.objects.get(ncp_chk_id=caad_accomodation_data['ncp_chk_id'])
         caad_accomodation_serializer = NcpAccomodationCheckSerializer(caad_accomodation,data=caad_accomodation_data) 
         if caad_accomodation_serializer.is_valid():
             caad_accomodation_serializer.save()
             return Response({"message": "Updated successfully"})
         return JsonResponse("Failed to Update",safe=False)
     elif request.method == 'DELETE':
-        caad_accomodation=NcpAccomodationCheck.objects.get(ac_id=id)
+        caad_accomodation=NcpAccomodationCheck.objects.get(ncp_chk_id=id)
         caad_accomodation.delete()
         return JsonResponse("Deleted sucessfully",safe=False)
 #END
 
-#NCP check accomodation
+#NCP approval accomodation
 @api_view(['GET', 'POST','PUT','DELETE'])
 def NcpApprovalAccApi(request,id=0):
     if request.method=="GET":
@@ -137,14 +137,126 @@ def NcpApprovalAccApi(request,id=0):
         return JsonResponse("Failed to Insert",safe=False)
     elif request.method == 'PUT':
         ncpAppr_accomodation_data=JSONParser().parse(request)
-        ncpAppr_accomodation=NcpAccomodationApproval.objects.get(ac_id=ncpAppr_accomodation_data['ac_id'])
+        ncpAppr_accomodation=NcpAccomodationApproval.objects.get(ncp_allotted_id=ncpAppr_accomodation_data['ncp_allotted_id'])
         ncpAppr_accomodation_serializer = NcpAccomodationApprovalSerializer(ncpAppr_accomodation,data=ncpAppr_accomodation_data) 
         if ncpAppr_accomodation_serializer.is_valid():
             ncpAppr_accomodation_serializer.save()
             return Response({"message": "Updated successfully"})
         return JsonResponse("Failed to Update",safe=False)
     elif request.method == 'DELETE':
-        ncpAppr_accomodation=NcpAccomodationApproval.objects.get(ac_id=id)
+        ncpAppr_accomodation=NcpAccomodationApproval.objects.get(ncp_allotted_id=id)
         ncpAppr_accomodation.delete()
+        return JsonResponse("Deleted sucessfully",safe=False)
+#END
+
+#Extension Proforma
+@api_view(['GET', 'POST','PUT','DELETE'])
+def ExtensionProformaApi(request,id=0):
+    if request.method=="GET":
+        extension_prof = ExtensionProforma.objects.all()
+        extension_prof_serializer = ExtensionProformaSerializer(extension_prof, many=True)
+        return Response(extension_prof_serializer.data)
+    elif request.method == 'POST':
+        extension_prof_data=JSONParser().parse(request)
+        extension_prof_serializer = ExtensionProformaSerializer(data=extension_prof_data) 
+        if extension_prof_serializer.is_valid():
+            extension_prof_serializer.save()
+            return Response({"message": "Insert successfully"})
+        return JsonResponse("Failed to Insert",safe=False)
+    elif request.method == 'PUT':
+        extension_prof_data=JSONParser().parse(request)
+        extension_prof=ExtensionProforma.objects.get(extension_form_id=extension_prof_data['extension_form_id'])
+        extension_prof_serializer = ExtensionProformaSerializer(extension_prof,data=extension_prof_data) 
+        if extension_prof_serializer.is_valid():
+            extension_prof_serializer.save()
+            return Response({"message": "Updated successfully"})
+        return JsonResponse("Failed to Update",safe=False)
+    elif request.method == 'DELETE':
+        extension_prof=ExtensionProforma.objects.get(extension_form_id=id)
+        extension_prof.delete()
+        return JsonResponse("Deleted sucessfully",safe=False)
+#END
+
+#CAAD Extension Proforma Verification
+@api_view(['GET', 'POST','PUT','DELETE'])
+def CaadExtensionVerificationApi(request,id=0):
+    if request.method=="GET":
+        caad_extension_prof = CaadExtensionVerification.objects.all()
+        caad_extension_prof_serializer = CaadExtensionVerificationSerializer(caad_extension_prof, many=True)
+        return Response(caad_extension_prof_serializer.data)
+    elif request.method == 'POST':
+        caad_extension_prof_data=JSONParser().parse(request)
+        caad_extension_prof_serializer = CaadExtensionVerificationSerializer(data=caad_extension_prof_data) 
+        if caad_extension_prof_serializer.is_valid():
+            caad_extension_prof_serializer.save()
+            return Response({"message": "Insert successfully"})
+        return JsonResponse("Failed to Insert",safe=False)
+    elif request.method == 'PUT':
+        caad_extension_prof_data=JSONParser().parse(request)
+        caad_extension_prof=ExtensionProforma.objects.get(caad_extension_id=caad_extension_prof_data['caad_extension_id'])
+        caad_extension_prof_serializer = CaadExtensionVerificationSerializer(caad_extension_prof,data=caad_extension_prof_data) 
+        if caad_extension_prof_serializer.is_valid():
+            caad_extension_prof_serializer.save()
+            return Response({"message": "Updated successfully"})
+        return JsonResponse("Failed to Update",safe=False)
+    elif request.method == 'DELETE':
+        caad_extension_prof=CaadExtensionVerification.objects.get(caad_extension_id=id)
+        caad_extension_prof.delete()
+        return JsonResponse("Deleted sucessfully",safe=False)
+#END
+
+#Login Proforma
+@api_view(['GET', 'POST','PUT','DELETE'])
+def LoginProformaApi(request,id=0):
+    if request.method=="GET":
+        login_prof = LoginProforma.objects.all()
+        login_prof_serializer = LoginProformaSerializer(login_prof, many=True)
+        return Response(login_prof_serializer.data)
+    elif request.method == 'POST':
+        login_prof_data=JSONParser().parse(request)
+        login_prof_serializer = LoginProformaSerializer(data=login_prof_data) 
+        if login_prof_serializer.is_valid():
+            login_prof_serializer.save()
+            return Response({"message": "Insert successfully"})
+        return JsonResponse("Failed to Insert",safe=False)
+    elif request.method == 'PUT':
+        login_prof_data=JSONParser().parse(request)
+        login_prof=ExtensionProforma.objects.get(login_form_id=login_prof_data['login_form_id'])
+        login_prof_serializer = LoginProformaSerializer(login_prof,data=login_prof_data) 
+        if login_prof_serializer.is_valid():
+            login_prof_serializer.save()
+            return Response({"message": "Updated successfully"})
+        return JsonResponse("Failed to Update",safe=False)
+    elif request.method == 'DELETE':
+        login_prof=LoginProforma.objects.get(login_form_id=id)
+        login_prof.delete()
+        return JsonResponse("Deleted sucessfully",safe=False)
+#END
+
+#Login Proforma
+@api_view(['GET', 'POST','PUT','DELETE'])
+def ItDeptLoginApi(request,id=0):
+    if request.method=="GET":
+        it_login = ItDeptLogin.objects.all()
+        it_login_serializer = ItDeptLoginSerializer(it_login, many=True)
+        return Response(it_login_serializer.data)
+    elif request.method == 'POST':
+        it_login_data=JSONParser().parse(request)
+        it_login_serializer = ItDeptLoginSerializer(data=it_login_data) 
+        if it_login_serializer.is_valid():
+            it_login_serializer.save()
+            return Response({"message": "Insert successfully"})
+        return JsonResponse("Failed to Insert",safe=False)
+    elif request.method == 'PUT':
+        it_login_data=JSONParser().parse(request)
+        it_login=ItDeptLogin.objects.get(user_id=it_login_data['user_id'])
+        it_login_serializer = ItDeptLoginSerializer(it_login,data=it_login_data) 
+        if it_login_serializer.is_valid():
+            it_login_serializer.save()
+            return Response({"message": "Updated successfully"})
+        return JsonResponse("Failed to Update",safe=False)
+    elif request.method == 'DELETE':
+        it_login=ItDeptLogin.objects.get(user_id=id)
+        it_login.delete()
         return JsonResponse("Deleted sucessfully",safe=False)
 #END
