@@ -4,6 +4,7 @@ from .models import *
 from .serializers import *
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
+from accomodation import service
 
 
 
@@ -21,17 +22,8 @@ def AccomodationProformaApi(request,id=0):
         except KeyError:
             return JsonResponse({"message": "Missing std_cnic"}, status=400)
 
-        try:
-            student_registration = StudentRegistration.objects.get(std_cnic=std_cnic)
-        except StudentRegistration.DoesNotExist:
-            return JsonResponse({"message": "Missing student record"}, status=404)
-
-        try:
-            internship = Internships.objects.get(registration_no=student_registration.reg_form_id)
-        except Internships.DoesNotExist:
-            return JsonResponse({"message": "Missing internship record"}, status=404)
-
-        accomodation_prof_data['internship'] = internship.internship_id
+        internship=service.get_internship(std_cnic)
+        accomodation_prof_data['internship'] = internship
 
         identity = accomodation_prof_data['internship']
         try:
@@ -197,15 +189,8 @@ def ExtensionProformaApi(request,id=0):
             std_cnic=extension_prof_data['std_cnic']
         except KeyError:
             return JsonResponse({"message":"Missing std_cnic"},status=404)
-        try:
-            student_registration=StudentRegistration.objects.get(std_cnic=std_cnic)
-        except StudentRegistration.DoesNotExist:
-             return JsonResponse({"message":"Missing student record"},status=404)
-        try:
-            internship=Internships.objects.get(registration_no=student_registration.reg_form_id)
-        except Internships.DoesNotExist:
-             return JsonResponse({"message":"Missing internship record"},status=404)
-        extension_prof_data['internship']=internship.internship_id
+        internship=service.get_internship(std_cnic)
+        extension_prof_data['internship']=internship
         extension_prof_serializer = ExtensionProformaSerializer(data=extension_prof_data) 
         if extension_prof_serializer.is_valid():
             extension=extension_prof_serializer.save()
@@ -274,15 +259,8 @@ def LoginProformaApi(request,id=0):
             std_cnic=login_prof_data['std_cnic']
         except KeyError:
             return JsonResponse({"message":"Missing std_cnic"},status=404)
-        try:
-            student_registration=StudentRegistration.objects.get(std_cnic=std_cnic)
-        except StudentRegistration.DoesNotExist:
-             return JsonResponse({"message":"Missing student record"},status=404)
-        try:
-            internship=Internships.objects.get(registration_no=student_registration.reg_form_id)
-        except Internships.DoesNotExist:
-             return JsonResponse({"message":"Missing internship record"},status=404)
-        login_prof_data['internship']=internship.internship_id
+        internship=service.get_internship(std_cnic)
+        login_prof_data['internship']=internship
         login_prof_serializer = LoginProformaSerializer(data=login_prof_data) 
         if login_prof_serializer.is_valid():
             login=login_prof_serializer.save()

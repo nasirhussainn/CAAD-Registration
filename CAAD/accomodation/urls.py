@@ -29,6 +29,4 @@ urlpatterns = [
     path('itloginapi', views.ItDeptLoginApi, name="ItDeptLoginApi"),
     path('itloginapi/<int:id>', views.ItDeptLoginApi),
 
-
-
 ]
