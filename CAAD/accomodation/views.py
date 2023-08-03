@@ -15,12 +15,47 @@ def AccomodationProformaApi(request,id=0):
         accomodation_prof_serializer = AccomodationProformaSerializer(accomodation_prof, many=True)
         return Response(accomodation_prof_serializer.data)
     elif request.method == 'POST':
-        accomodation_prof_data=JSONParser().parse(request)
-        accomodation_prof_serializer = AccomodationProformaSerializer(data=accomodation_prof_data) 
+        accomodation_prof_data = JSONParser().parse(request)
+        try:
+            std_cnic = accomodation_prof_data['std_cnic']
+        except KeyError:
+            return JsonResponse({"message": "Missing std_cnic"}, status=400)
+
+        try:
+            student_registration = StudentRegistration.objects.get(std_cnic=std_cnic)
+        except StudentRegistration.DoesNotExist:
+            return JsonResponse({"message": "Missing student record"}, status=404)
+
+        try:
+            internship = Internships.objects.get(registration_no=student_registration.reg_form_id)
+        except Internships.DoesNotExist:
+            return JsonResponse({"message": "Missing internship record"}, status=404)
+
+        accomodation_prof_data['internship'] = internship.internship_id
+
+        identity = accomodation_prof_data['internship']
+        try:
+            identity_performa_id = IdentitycardProforma.objects.get(internship=identity)
+        except IdentitycardProforma.DoesNotExist:
+            return JsonResponse({"message": "Missing student card record"}, status=404)
+
+        accomodation_prof_data['identity_card'] = identity_performa_id.identity_performa_id
+
+        accomodation_prof_serializer = AccomodationProformaSerializer(data=accomodation_prof_data)
         if accomodation_prof_serializer.is_valid():
-            accomodation_prof_serializer.save()
+            accomodation = accomodation_prof_serializer.save()
+
+            caad_accomodation_verification_data = {
+                'accomodation_form': accomodation.ac_id,
+            }
+            caad_accomodation_verification_serializer = CaadAccomodationVerificationSerializer(
+                data=caad_accomodation_verification_data
+            )
+            if caad_accomodation_verification_serializer.is_valid():
+                caad_accomodation_verification_serializer.save()
+
             return Response({"message": "Insert successfully"})
-        return JsonResponse("Failed to Insert",safe=False)
+        return JsonResponse(accomodation_prof_serializer.errors, status=400)
     elif request.method == 'PUT':
         accomodation_prof_data=JSONParser().parse(request)
         accomodation_prof=AccomodationProforma.objects.get(ac_id=accomodation_prof_data['ac_id'])
@@ -158,9 +193,30 @@ def ExtensionProformaApi(request,id=0):
         return Response(extension_prof_serializer.data)
     elif request.method == 'POST':
         extension_prof_data=JSONParser().parse(request)
+        try:
+            std_cnic=extension_prof_data['std_cnic']
+        except KeyError:
+            return JsonResponse({"message":"Missing std_cnic"},status=404)
+        try:
+            student_registration=StudentRegistration.objects.get(std_cnic=std_cnic)
+        except StudentRegistration.DoesNotExist:
+             return JsonResponse({"message":"Missing student record"},status=404)
+        try:
+            internship=Internships.objects.get(registration_no=student_registration.reg_form_id)
+        except Internships.DoesNotExist:
+             return JsonResponse({"message":"Missing internship record"},status=404)
+        extension_prof_data['internship']=internship.internship_id
         extension_prof_serializer = ExtensionProformaSerializer(data=extension_prof_data) 
         if extension_prof_serializer.is_valid():
-            extension_prof_serializer.save()
+            extension=extension_prof_serializer.save()
+            caad_extension_verification_data={
+                'extension_form':extension.extension_form_id,
+            }
+            caad_extension_verification_serializer=CaadExtensionVerificationSerializer(
+                data=caad_extension_verification_data
+            )
+            if caad_extension_verification_serializer.is_valid():
+                caad_extension_verification_serializer.save()
             return Response({"message": "Insert successfully"})
         return JsonResponse("Failed to Insert",safe=False)
     elif request.method == 'PUT':
@@ -214,9 +270,30 @@ def LoginProformaApi(request,id=0):
         return Response(login_prof_serializer.data)
     elif request.method == 'POST':
         login_prof_data=JSONParser().parse(request)
+        try:
+            std_cnic=login_prof_data['std_cnic']
+        except KeyError:
+            return JsonResponse({"message":"Missing std_cnic"},status=404)
+        try:
+            student_registration=StudentRegistration.objects.get(std_cnic=std_cnic)
+        except StudentRegistration.DoesNotExist:
+             return JsonResponse({"message":"Missing student record"},status=404)
+        try:
+            internship=Internships.objects.get(registration_no=student_registration.reg_form_id)
+        except Internships.DoesNotExist:
+             return JsonResponse({"message":"Missing internship record"},status=404)
+        login_prof_data['internship']=internship.internship_id
         login_prof_serializer = LoginProformaSerializer(data=login_prof_data) 
         if login_prof_serializer.is_valid():
-            login_prof_serializer.save()
+            login=login_prof_serializer.save()
+            it_dept_data={
+                'login_form':login.login_form_id,
+            }
+            it_dept_serializer=ItDeptLoginSerializer(
+                data=it_dept_data
+            )
+            if it_dept_serializer.is_valid():
+                it_dept_serializer.save()
             return Response({"message": "Insert successfully"})
         return JsonResponse("Failed to Insert",safe=False)
     elif request.method == 'PUT':
