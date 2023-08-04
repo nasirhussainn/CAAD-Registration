@@ -4,7 +4,7 @@ from .models import *
 from .serializers import *
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-from accomodation import service
+from accomodation import services
 
 
 
@@ -22,16 +22,10 @@ def AccomodationProformaApi(request,id=0):
         except KeyError:
             return JsonResponse({"message": "Missing std_cnic"}, status=400)
 
-        internship=service.get_internship(std_cnic)
-        accomodation_prof_data['internship'] = internship
-
-        identity = accomodation_prof_data['internship']
-        try:
-            identity_performa_id = IdentitycardProforma.objects.get(internship=identity)
-        except IdentitycardProforma.DoesNotExist:
-            return JsonResponse({"message": "Missing student card record"}, status=404)
-
-        accomodation_prof_data['identity_card'] = identity_performa_id.identity_performa_id
+        internship_id=services.get_internship(std_cnic)
+        identity_id=services.get_identity(internship_id)
+        accomodation_prof_data['internship'] = internship_id
+        accomodation_prof_data['identity_card'] = identity_id
 
         accomodation_prof_serializer = AccomodationProformaSerializer(data=accomodation_prof_data)
         if accomodation_prof_serializer.is_valid():
@@ -189,7 +183,7 @@ def ExtensionProformaApi(request,id=0):
             std_cnic=extension_prof_data['std_cnic']
         except KeyError:
             return JsonResponse({"message":"Missing std_cnic"},status=404)
-        internship=service.get_internship(std_cnic)
+        internship=services.get_internship(std_cnic)
         extension_prof_data['internship']=internship
         extension_prof_serializer = ExtensionProformaSerializer(data=extension_prof_data) 
         if extension_prof_serializer.is_valid():
@@ -259,7 +253,7 @@ def LoginProformaApi(request,id=0):
             std_cnic=login_prof_data['std_cnic']
         except KeyError:
             return JsonResponse({"message":"Missing std_cnic"},status=404)
-        internship=service.get_internship(std_cnic)
+        internship=services.get_internship(std_cnic)
         login_prof_data['internship']=internship
         login_prof_serializer = LoginProformaSerializer(data=login_prof_data) 
         if login_prof_serializer.is_valid():

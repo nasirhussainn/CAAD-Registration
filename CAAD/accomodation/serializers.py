@@ -5,6 +5,7 @@ class AccomodationProformaSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccomodationProforma
         fields = '__all__'
+        # depth=1
 
 
 class AccomodationTypeSerializer(serializers.ModelSerializer):
